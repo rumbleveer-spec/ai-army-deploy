@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./sites:/var/www:ro
+    restart: unless-stopped
+
+  site1:
+    build: ./sites/site1
+    expose:
+      - "5000"
+    environment:
+      - FLASK_ENV=production
+    restart: unless-stopped
+
+  site2:
+    build: ./sites/site2
+    expose:
+      - "5000"
+    environment:
+      - FLASK_ENV=production
+    restart: unless-stopped
+
+  # Add more services for remaining sites...
+
+  monitoring:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: unless-stopped
