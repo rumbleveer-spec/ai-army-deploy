@@ -1,0 +1,18 @@
+# AI Army Deploy Configuration
+# site_name,directory,url
+
+site1,/var/www/site1,https://site1.example.com
+site2,/var/www/site2,https://site2.example.com
+site3,/var/www/site3,https://site3.example.com
+site4,/var/www/site4,https://site4.example.com
+site5,/var/www/site5,https://site5.example.com
+site6,/var/www/site6,https://site6.example.com
+site7,/var/www/site7,https://site7.example.com
+site8,/var/www/site8,https://site8.example.com
+site9,/var/www/site9,https://site9.example.com
+site10,/var/www/site10,https://site10.example.com
+site11,/var/www/site11,https://site11.example.com
+site12,/var/www/site12,https://site12.example.com
+site13,/var/www/site13,https://site13.example.com
+site14,/var/www/site14,https://site14.example.com
+site15,/var/www/site15,https://site15.example.com
