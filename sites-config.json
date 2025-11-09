@@ -1,0 +1,23 @@
+{
+  "sites": [
+    {
+      "name": "site1",
+      "url": "https://site1.example.com",
+      "method": "ftp",
+      "local_path": "./sites/site1",
+      "ftp_host": "ftp.example.com",
+      "ftp_user": "user1",
+      "ftp_pass": "password1",
+      "remote_path": "/public_html/site1"
+    },
+    {
+      "name": "site2",
+      "url": "https://site2.example.com",
+      "method": "ssh",
+      "local_path": "./sites/site2",
+      "ssh_host": "server.example.com",
+      "ssh_user": "deploy",
+      "remote_path": "/var/www/site2"
+    }
+  ]
+}
