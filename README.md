@@ -1,63 +1,42 @@
 # 🚀 AI Army Deploy
 
-> Master Deployment Package for 15 Websites - Automated Deployment System
+> Professional Multi-Site Deployment Automation System
 
-[![Deployment](https://img.shields.io/badge/deployment-automated-success)](https://github.com/rumbleveer-spec/ai-army-deploy)
-[![Hostinger](https://img.shields.io/badge/hosting-hostinger-blue)](https://hostinger.com)
+[![Python](https://img.shields.io/badge/python-3.8+-blue)](https://python.org)
 [![Bash](https://img.shields.io/badge/bash-5.0+-green)](https://www.gnu.org/software/bash/)
-
-## 🎯 Overview
-
-AI Army Deploy is a powerful automated deployment system designed to manage and deploy 15+ websites simultaneously with a single command. Perfect for agencies, developers managing multiple projects, or anyone who needs efficient multi-site deployment.
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 ## ✨ Features
 
-- 🚀 **One-Command Deployment** - Deploy all 15 sites with a single command
-- 🌐 **Hostinger Optimized** - Built specifically for Hostinger hosting
-- 🔄 **Automatic Updates** - Pull latest code from Git and deploy
-- 📊 **Status Monitoring** - Real-time health checks for all sites
-- 🔐 **Secure Configuration** - Environment-based credentials management
-- 📝 **Detailed Logging** - Track all deployments with timestamped logs
-- 🐳 **Docker Support** - Local testing with Docker Compose
-- ⚡ **Parallel Deployment** - Deploy multiple sites simultaneously
+- 🎯 **Multi-Site Deployment** - Deploy 15+ websites simultaneously
+- 🔄 **FTP & SSH Support** - Multiple deployment methods
+- 📊 **Status Monitoring** - Real-time health checks
+- 📝 **Detailed Logging** - Track all deployments
+- ⚡ **Quick Deploy** - One-command deployment
+- 🐳 **Docker Support** - Container-based deployment
+- 🔐 **Secure** - Environment-based credentials
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- Bash 5.0+
-- Git
-- SSH access to server
-- Hostinger account (or any hosting with FTP/SSH)
+- Python 3.8+
+- FTP/SSH access to hosting
+- rsync (for SSH deployments)
 
 ### Installation
 
 ```bash
-# Clone the repository
+# Clone repository
 git clone https://github.com/rumbleveer-spec/ai-army-deploy.git
 cd ai-army-deploy
 
-# Make scripts executable
-chmod +x deploy.sh hostinger-deploy.sh
+# Install dependencies
+pip3 install -r requirements.txt
 
-# Configure environment
-cp .env.example .env
-# Edit .env with your credentials
-nano .env
-
-# Update site configuration
-nano config.yml
-```
-
-### Configuration
-
-Edit `config.yml` with your site details:
-
-```csv
-site_name,directory,url
-mysite1,/var/www/mysite1,https://mysite1.com
-mysite2,/var/www/mysite2,https://mysite2.com
-...
+# Configure sites
+cp sites-config.example.json sites-config.json
+# Edit sites-config.json with your site details
 ```
 
 ## 📖 Usage
@@ -65,150 +44,174 @@ mysite2,/var/www/mysite2,https://mysite2.com
 ### Deploy All Sites
 
 ```bash
-./deploy.sh all
+python3 deploy.py all
 ```
 
-### Deploy Specific Site
+### Deploy Single Site
 
 ```bash
-./deploy.sh site mysite1
+python3 deploy.py site --name mysite
 ```
 
-### Check Status
+### List Configured Sites
 
 ```bash
-./deploy.sh status
+python3 deploy.py list
 ```
 
-### Hostinger Deployment
+### Check Site Status
 
 ```bash
-# Via FTP
-./hostinger-deploy.sh
-
-# Via SSH (if available)
-ssh user@server "cd /path && ./deploy.sh all"
+python3 deploy.py status
 ```
 
-## 🏗️ Architecture
+### Quick Deploy Script
+
+```bash
+chmod +x quick-deploy.sh
+./quick-deploy.sh
+```
+
+## ⚙️ Configuration
+
+Edit `sites-config.json`:
+
+```json
+{
+  "sites": [
+    {
+      "name": "mysite",
+      "url": "https://mysite.com",
+      "method": "ftp",
+      "local_path": "./sites/mysite",
+      "ftp_host": "ftp.mysite.com",
+      "ftp_user": "username",
+      "ftp_pass": "password",
+      "remote_path": "/public_html"
+    }
+  ]
+}
+```
+
+### Deployment Methods
+
+**FTP:**
+```json
+{
+  "method": "ftp",
+  "ftp_host": "ftp.example.com",
+  "ftp_user": "username",
+  "ftp_pass": "password",
+  "remote_path": "/public_html"
+}
+```
+
+**SSH/rsync:**
+```json
+{
+  "method": "ssh",
+  "ssh_host": "server.example.com",
+  "ssh_user": "deploy",
+  "remote_path": "/var/www/site"
+}
+```
+
+## 📁 Project Structure
 
 ```
 ai-army-deploy/
-├── deploy.sh              # Main deployment script
-├── hostinger-deploy.sh    # Hostinger-specific script
-├── config.yml             # Site configuration
-├── docker-compose.yml     # Local testing setup
-├── .env.example           # Environment template
+├── deploy.py              # Main deployment script
+├── quick-deploy.sh        # Quick deploy wrapper
+├── sites-config.json      # Site configurations
+├── requirements.txt       # Python dependencies
+├── sites/                 # Site source files
+│   ├── site1/
+│   ├── site2/
+│   └── site3/
 ├── logs/                  # Deployment logs
-│   ├── deploy-YYYYMMDD.log
-│   └── errors.log
-└── README.md             # This file
+└── README.md
 ```
 
 ## 🔧 Advanced Features
 
-### Automated Backups
+### Batch Deployment
 
-Enable automatic backups before deployment:
+```python
+from deploy import DeployManager
 
-```bash
-# In .env
-AUTO_BACKUP=true
-BACKUP_DIR=/backups
+manager = DeployManager()
+manager.deploy_all()
 ```
 
-### Slack Notifications
+### Custom Deployment
 
-Get deployment notifications in Slack:
-
-```bash
-# In .env
-SLACK_WEBHOOK_URL=https://hooks.slack.com/services/xxx
+```python
+manager = DeployManager('custom-config.json')
+manager.deploy_single('mysite')
 ```
 
-### Rollback
+### Status Check
 
-Rollback to previous deployment:
-
-```bash
-./deploy.sh rollback site1
+```python
+for site in manager.sites:
+    online = manager.check_site_status(site)
+    print(f"{site['name']}: {'Online' if online else 'Offline'}")
 ```
 
-## 🎯 Deployment Workflow
+## 📊 Logging
 
-1. **Pull Latest Code** - Fetch updates from Git
-2. **Install Dependencies** - npm/pip install
-3. **Build Assets** - Run build scripts
-4. **Run Tests** - Execute test suites
-5. **Deploy** - Copy files to production
-6. **Restart Services** - Reload web services
-7. **Verify** - Health check all sites
-8. **Notify** - Send deployment notifications
+Logs are stored in `logs/` directory:
 
-## 📊 Monitoring
-
-Monitor all sites with built-in health checks:
-
-```bash
-# Check all sites
-./deploy.sh status
-
-# Monitor continuously
-watch -n 60 './deploy.sh status'
+```
+logs/
+├── deploy-20251109.log
+├── deploy-20251108.log
+└── errors.log
 ```
 
-## 🐳 Docker Development
-
-Test deployments locally with Docker:
+## 🐳 Docker Deployment
 
 ```bash
-# Start all services
-docker-compose up -d
+# Build image
+docker build -t ai-army-deploy .
 
-# View logs
-docker-compose logs -f
-
-# Stop services
-docker-compose down
+# Run deployment
+docker run -v $(pwd)/sites:/app/sites ai-army-deploy all
 ```
 
-## 🔒 Security
+## 🌐 Hostinger Deployment
 
-- ✅ Environment-based credentials
-- ✅ No hardcoded passwords
-- ✅ SSH key authentication
-- ✅ Encrypted connections
-- ✅ Access logs
+```bash
+# Configure Hostinger details in sites-config.json
+{
+  "name": "mysite",
+  "method": "ftp",
+  "ftp_host": "ftp.hostinger.com",
+  "ftp_user": "u123456789",
+  "ftp_pass": "your_password",
+  "remote_path": "/public_html"
+}
 
-## 🤝 Contributing
+# Deploy
+python3 deploy.py site --name mysite
+```
 
-Contributions welcome! Please:
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
-
-## 📄 License
-
-MIT License - see LICENSE file for details
-
-## 🆘 Troubleshooting
+## 🛠️ Troubleshooting
 
 ### FTP Connection Failed
 
 ```bash
 # Test FTP connection
-lftp -u username,password ftp.example.com
+ftp ftp.example.com
+# Enter username and password
 ```
 
-### Permission Denied
+### SSH Permission Denied
 
 ```bash
-# Fix file permissions
-chmod +x deploy.sh
-chmod 600 .env
+# Setup SSH keys
+ssh-keygen -t rsa
+ssh-copy-id user@server.com
 ```
 
 ### Site Not Loading
@@ -217,24 +220,23 @@ chmod 600 .env
 # Check logs
 tail -f logs/deploy-$(date +%Y%m%d).log
 
-# Verify site status
-curl -I https://yoursite.com
+# Verify deployment
+python3 deploy.py status
 ```
+
+## 📄 License
+
+MIT License - see LICENSE file
+
+## 🤝 Contributing
+
+Contributions welcome! Open issues or submit PRs.
 
 ## 📞 Support
 
-- 📧 Email: support@example.com
-- 💬 Issues: [GitHub Issues](https://github.com/rumbleveer-spec/ai-army-deploy/issues)
-- 📖 Docs: [Full Documentation](https://docs.example.com)
-
-## 🙏 Acknowledgments
-
-- Hostinger for reliable hosting
-- Open source community
-- All contributors
+- GitHub Issues: [Report Bug](https://github.com/rumbleveer-spec/ai-army-deploy/issues)
+- Documentation: [Full Docs](https://github.com/rumbleveer-spec/ai-army-deploy/wiki)
 
 ---
 
-**Built with ❤️ for Developers by Developers**
-
-[Documentation](https://docs.example.com) • [Report Bug](https://github.com/rumbleveer-spec/ai-army-deploy/issues) • [Request Feature](https://github.com/rumbleveer-spec/ai-army-deploy/issues)
+**Built with ❤️ for Developers | Powered by AI Army HQ**
