@@ -1,0 +1,49 @@
+{
+  "sites": [
+    {
+      "name": "site1",
+      "local_path": "/var/www/site1",
+      "deploy_method": "ssh",
+      "ssh_host": "your-server.com",
+      "ssh_user": "deploy_user",
+      "ssh_port": 22,
+      "remote_path": "/var/www/html/site1",
+      "health_check_url": "https://site1.com/health",
+      "pre_deploy": [
+        "npm install --production",
+        "npm run build"
+      ],
+      "post_deploy": [
+        "pm2 restart site1"
+      ]
+    },
+    {
+      "name": "site2",
+      "local_path": "/var/www/site2",
+      "deploy_method": "ftp",
+      "ftp_host": "ftp.hostinger.com",
+      "ftp_user": "username",
+      "ftp_pass": "password",
+      "remote_path": "/public_html/site2",
+      "health_check_url": "https://site2.com"
+    },
+    {
+      "name": "site3",
+      "local_path": "/var/www/site3",
+      "deploy_method": "git",
+      "git_remote": "origin",
+      "git_branch": "main",
+      "health_check_url": "https://site3.com"
+    }
+  ],
+  "notifications": {
+    "slack_webhook": "https://hooks.slack.com/services/YOUR/WEBHOOK/URL",
+    "email": "admin@example.com"
+  },
+  "settings": {
+    "max_parallel": 3,
+    "timeout": 300,
+    "retry_on_failure": true,
+    "backup_before_deploy": true
+  }
+}
